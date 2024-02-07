@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Room</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <div class="chat-container">
+        <div id="userList">
+            <h3>Users</h3>
+            <ul id="users"></ul>
+        </div>
+        <div>
+            <h2>Chat Room: <span id="roomDisplay"></span></h2>
+            <div id="messages"></div>
+            <input type="text" id="messageInput" placeholder="Write a message...">
+            <button onclick="sendMessage()">Send</button>
+            <button onclick="leaveRoom()">Leave Room</button>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username');
+        const room = urlParams.get('room');
+
+        document.getElementById('roomDisplay').textContent = room;
+
+        if (username && room) {
+            socket.emit('joinRoom', { username, room });
+        } else {
+            alert('Username or room information is missing.');
+            window.location.href = '/';
+        }
+
+        socket.on('roomUsers', users => {
+            const usersList = document.getElementById('users');
+            usersList.innerHTML = ''; // Clear current list
+            users.forEach(user => {
+                const li = document.createElement('li');
+                li.textContent = user;
+                usersList.appendChild(li);
+            });
+        });
+
+        function sendMessage() {
+            const message = document.getElementById('messageInput').value;
+            socket.emit('sendMessage', { username, room, message });
+            document.getElementById('messageInput').value = '';
+        }
+
+        function leaveRoom() {
+            socket.emit('leaveRoom', { username, room });
+            window.location.href = '/';
+        }
+
+        socket.on('message', (message) => {
+            displayMessage(message);
+        });
+
+        function displayMessage(message) {
+            const messagesContainer = document.getElementById('messages');
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message.text ? `${message.username}: ${message.text}` : message;
+            messagesContainer.appendChild(messageElement);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    </script>
+</body>
+</html>

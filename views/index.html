@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Chat App</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <h1>Welcome to the Chat App</h1>
+    <form id="joinChatForm">
+        <label for="username">Enter your user name:</label>
+        <input type="text" id="username" name="username" placeholder="User Name" aria-label="User Name" required>
+        <br>
+        <label for="roomSelection">Choose a room:</label>
+        <select id="roomSelection" name="room" aria-label="Room Selection">
+            <option value="DevOps">DevOps</option>
+            <option value="CloudComputing">Cloud Computing</option>
+            <option value="COVID19">COVID-19</option>
+            <option value="Sports">Sports</option>
+            <option value="NodeJS">NodeJS</option>
+        </select>
+        <button type="button" onclick="joinChat()" aria-label="Join Chat">Join Chat</button>
+    </form>
+    <button onclick="window.location.href='register.html'" aria-label="Register">Register</button>
+
+    <script>
+        function joinChat() {
+            const username = document.getElementById('username').value;
+            const room = document.getElementById('roomSelection').value;
+            if (username) {
+                window.location.href = `chat.html?username=${encodeURIComponent(username)}&room=${encodeURIComponent(room)}`;
+            } else {
+                alert('Please enter a username.');
+            }
+        }
+    </script>
+</body>
+</html>

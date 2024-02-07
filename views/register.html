@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Register</h1>
+    <form id="registrationForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" placeholder="Enter your username" required>
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" placeholder="Enter your first name" required>
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" placeholder="Enter your last name" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+        <button type="button" onclick="registerUser()">Register</button>
+    </form>
+    <script>
+        function registerUser() {
+            const username = document.getElementById('username').value;
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const password = document.getElementById('password').value;
+
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, firstName, lastName, password }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.success) {
+                    // Handle successful registration
+                    console.log('Registration successful');
+                    alert('Registration successful. You can now join the chat.');
+                    window.location.href = '/'; // Redirect to the entry page or directly to the chat
+                } else {
+                    // Handle registration failure
+                    console.log('Registration failed');
+                    alert('Registration failed. Please try again.');
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        }
+    </script>
+</body>
+</html>
